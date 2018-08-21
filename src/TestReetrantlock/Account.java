@@ -1,9 +1,7 @@
-package TestAccount;
+package TestReetrantlock;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * 此示例演示1000个线程如何往同一个公共账号里面存1块钱，用到线程同步，锁同一个对象。
