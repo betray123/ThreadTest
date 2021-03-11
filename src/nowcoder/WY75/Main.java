@@ -48,7 +48,7 @@ public class Main {
      * 条件2表示 取A包内最小价值的商品放入B包，新A包总价值 < 新B包总价值
      * 数组dp中，dp[i][j]表示前i个商品中，使A包总价值为j的放置方案数量。此时，
      * 如商品i放入A包，则A包内的商品最小价值为arr[i](降序)。
-     * 若满足j>n_sum-j && j-arr[i]<n-j-arr[i],表示当前放置方案满足1,2,3条件,
+     * 若满足j>n_sum-j && j-arr[i]<n-（j-arr[i]）,表示当前放置方案满足1,2,3条件,
      * (A包总价值j，i往后的商品都放入B包，B包总价值n_sum-j,且A包内商品最小价值arr[i])
      * 则 ans+=dp[i-1][j-arr[i]](ans记录满足条件1,2,3的方案总数)
      *  如定义dp[n][n_sum+1]，则通过率60%，内存超限。因此定义dp[2][n_sum+1],因为每次
@@ -64,7 +64,7 @@ public class Main {
         //价值总和
         int n_sum = 0;
         //方案总和
-        int ans = 0;
+        long ans = 0;
         for (int i = 0; i < length; i++){
             arrs[i] = Integer.parseInt(strs[i]);
             n_sum += arrs[i];
@@ -81,11 +81,13 @@ public class Main {
             }
         }
 
-        int [][] dp = new int[2][n_sum+1]; // dp[0]表示在arr[i]之前的商品,放置方案数量，dp[1]表示加入商品arr[i]后，方案数量
+        long [][] dp = new long[2][n_sum+1]; // dp[0]表示在arr[i]之前的商品,放置方案数量，dp[1]表示加入商品arr[i]后，方案数量
 
         dp[0][0]=1; // 0个商品，总价值数为0的方案数量为1
 
-        for(int j=1;j<=n_sum;dp[0][j]=0,j++); // 0个商品，总价值数为j(j>=1)的方案数量为0
+        for(int j=1;j<=n_sum;j++){// 0个商品，总价值数为j(j>=1)的方案数量为0
+            dp[0][j]=0;
+        }
 
         for (int i = 0; i < arrs.length; i++){
             for (int j = 1; j < n_sum; j++){
@@ -95,12 +97,15 @@ public class Main {
                     dp[1][j] += dp[0][j-arrs[i]]; // 加入商品价值arr[i]
 
                     if (j > n_sum - j && j-arrs[i] < n_sum-(j-arrs[i])){ //若当前价值大于剩余价值，且当前价值-放该商品前价值 小于 总价值 - （当前价值-放该商品前价值）
-                        ans+=dp[0][j-arrs[i]]; //满足条件1,2,3，则修改计数ans
+                        ans += dp[0][j-arrs[i]]; //满足条件1,2,3，则修改计数ans
 
                     }
                 }
             }
-            for(int j=1; j<n_sum; dp[0][j]=dp[1][j], j++);//更新dp[0]
+
+            for(int j=1; j<n_sum; j++){//更新dp[0]
+                dp[0][j]=dp[1][j];
+            }
         }
 
         System.out.println(ans);
